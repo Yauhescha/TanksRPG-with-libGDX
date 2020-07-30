@@ -3,9 +3,17 @@ package com.mygames.tanksrpg;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygames.tanksrpg.units.BotTank;
 import com.mygames.tanksrpg.units.PlayerTank;
 import com.mygames.tanksrpg.units.Tank;
@@ -17,7 +25,9 @@ public class RunGame extends ApplicationAdapter {
 	private BulletEmmiter bulletEmmiter;
 	private BotEmmiter botEmmiter;
 	private TextureAtlas atlas;
-
+	private BitmapFont font24;
+	private Stage stage;
+	private boolean paused;
 	private float gameTimer;
 	float dt;
 
@@ -25,30 +35,55 @@ public class RunGame extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		atlas = new TextureAtlas("game.pack");
+		font24 = new BitmapFont(Gdx.files.internal("font24.fnt"));
+		atlas = new TextureAtlas("game.pack.pack");
 		batch = new SpriteBatch();
 		map = new Map(atlas);
 		player = new PlayerTank(this, atlas);
 		botEmmiter = new BotEmmiter(this, atlas);
 		bulletEmmiter = new BulletEmmiter(atlas);
 		gameTimer = 10;
+		stage = new Stage();
+
+		Skin skin = new Skin();
+		skin.add("simpleButton", new TextureRegion(atlas.findRegion("SimpleButton")));
+		TextButtonStyle buttonStyle = new TextButtonStyle();
+		buttonStyle.up = skin.getDrawable("simpleButton");
+		buttonStyle.font = font24;
+
+		TextButton pauseButton = new TextButton("Pause", buttonStyle);
+		pauseButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				paused = !paused;
+			}
+		});
+		pauseButton.setPosition(1100, 680);
+		stage.addActor(pauseButton);
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void render() {
 		dt = Gdx.graphics.getDeltaTime();
-		update(dt);
-		Gdx.gl.glClearColor(0, 0.6f, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		map.render(batch);
-		player.render(batch);
-		botEmmiter.render(batch);
-		bulletEmmiter.render(batch);
-		batch.end();
+		
+			update(dt);
+			Gdx.gl.glClearColor(0, 0.6f, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			batch.begin();
+			map.render(batch);
+			player.render(batch);
+			botEmmiter.render(batch);
+			bulletEmmiter.render(batch);
+			player.renderHUD(batch, font24);
+			stage.draw();
+			batch.end();
+		
+		stage.act(dt);
 	}
 
 	public void update(float dt) {
+		if (!paused)return;
 		gameTimer += dt;
 		if (gameTimer > 5.0f) {
 			gameTimer = 0.0f;

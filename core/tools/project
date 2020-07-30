@@ -1,14 +1,14 @@
-name=my.pack
-filename=my.pack
+name=game.pack
+filename=
 input=textures
-output=
+output=..\assets
 
 alias=true
 alphaThreshold=0
 debug=false
 defaultFileFormat=PNG
-defaultFilterMag=Nearest
-defaultFilterMin=Nearest
+defaultFilterMag=Linear
+defaultFilterMin=Linear
 defaultFormat=RGBA8888
 defaultImageQuality=0.9
 duplicatePadding=true

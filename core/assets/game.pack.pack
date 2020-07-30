@@ -6,69 +6,83 @@ repeat: none
 powerUps
   rotate: false
   xy: 2, 2
-  size: 240, 210
-  orig: 240, 210
+  size: 240, 64
+  orig: 240, 64
+  offset: 0, 0
+  index: -1
+walls
+  rotate: false
+  xy: 244, 2
+  size: 100, 60
+  orig: 100, 60
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 2, 214
+  xy: 2, 68
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 simpleWeapon
   rotate: false
-  xy: 52, 214
+  xy: 52, 68
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 playerTankBase
   rotate: false
-  xy: 94, 214
+  xy: 94, 68
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 grass40
   rotate: false
-  xy: 136, 214
+  xy: 136, 68
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 botTankBase
   rotate: false
-  xy: 178, 214
+  xy: 178, 68
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
+SimpleButton
+  rotate: false
+  xy: 346, 2
+  size: 140, 32
+  orig: 140, 32
+  offset: 0, 0
+  index: -1
 block
   rotate: false
-  xy: 220, 214
+  xy: 220, 68
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 projectile
   rotate: false
-  xy: 220, 236
+  xy: 52, 110
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 particle
   rotate: false
-  xy: 238, 236
+  xy: 70, 110
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bar
   rotate: false
-  xy: 2, 264
+  xy: 2, 118
   size: 40, 8
   orig: 40, 8
   offset: 0, 0
