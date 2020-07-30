@@ -1,0 +1,75 @@
+
+textures1.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+tanks
+  rotate: false
+  xy: 2, 2
+  size: 448, 320
+  orig: 448, 320
+  offset: 0, 0
+  index: -1
+ground
+  rotate: false
+  xy: 452, 2
+  size: 288, 224
+  orig: 288, 224
+  offset: 0, 0
+  index: -1
+gear
+  rotate: false
+  xy: 742, 2
+  size: 250, 250
+  orig: 250, 250
+  offset: 0, 0
+  index: -1
+powerUps
+  rotate: false
+  xy: 2, 324
+  size: 240, 210
+  orig: 240, 210
+  offset: 0, 0
+  index: -1
+font
+  rotate: false
+  xy: 244, 324
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+menuButton
+  rotate: false
+  xy: 502, 324
+  size: 416, 64
+  orig: 416, 64
+  offset: 0, 0
+  index: -1
+crs
+  rotate: false
+  xy: 452, 228
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+cursor
+  rotate: false
+  xy: 514, 228
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+ammo2
+  rotate: false
+  xy: 564, 228
+  size: 128, 16
+  orig: 128, 16
+  offset: 0, 0
+  index: -1
+particle
+  rotate: false
+  xy: 452, 290
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
