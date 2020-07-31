@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
-import com.mygames.tanksrpg.BulletEmmiter;
+import com.mygames.tanksrpg.GameScreen;
 import com.mygames.tanksrpg.RunGame;
 import com.mygames.tanksrpg.Weapon;
 import com.mygames.tanksrpg.utils.Direction;
@@ -13,7 +13,7 @@ import com.mygames.tanksrpg.utils.TankOwner;
 import com.mygames.tanksrpg.utils.Utils;
 
 public abstract class Tank {
-	RunGame game;
+	GameScreen gameScreen;
 	TankOwner ownerType;
 	TextureRegion texture;
 	TextureRegion textureHp;
@@ -32,8 +32,8 @@ public abstract class Tank {
 	int WIDTH;
 	int HEIGHT;
 
-	public Tank(RunGame game) {
-		this.game = game;
+	public Tank(GameScreen game) {
+		this.gameScreen = game;
 		this.tmp = new Vector2(0, 0);
 	}
 
@@ -84,7 +84,7 @@ public abstract class Tank {
 		if (fireTimer > weapon.getFirePeriod()) {
 			fireTimer = 0.0f;
 			float angleRad = (float) Math.toRadians(angleTurret);
-			game.getBulletEmmiter().activate(this, position.x, position.y,
+			gameScreen.getBulletEmmiter().activate(this, position.x, position.y,
 					weapon.getProjectileSpeed() * (float) Math.cos(angleRad), 320 * (float) Math.sin(angleRad),
 					weapon.getDamage(), weapon.getProjectileTimeLife());
 
@@ -94,7 +94,7 @@ public abstract class Tank {
 	public void move(Direction direction, float dt) {
 		tmp.set(position);
 		tmp.add(speed * direction.getVx() * dt, speed * direction.getVy() * dt);
-		if (game.getMap().isAreaClear(tmp.x, tmp.y, WIDTH / 2)) {
+		if (gameScreen.getMap().isAreaClear(tmp.x, tmp.y, WIDTH / 2)) {
 			angle = direction.getAngle();
 			position.set(tmp);
 		}

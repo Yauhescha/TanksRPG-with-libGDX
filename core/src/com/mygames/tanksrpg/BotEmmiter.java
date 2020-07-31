@@ -10,11 +10,11 @@ public class BotEmmiter {
 	public static final int MAX_BOTS = 10;
 	
 
-	public BotEmmiter(RunGame game, TextureAtlas atlas) {
+	public BotEmmiter(GameScreen gameScreen, TextureAtlas atlas) {
 		this.enemies = new BotTank[MAX_BOTS];
 		
 		for(int i=0; i<MAX_BOTS; i++)
-			this.enemies[i]=new BotTank(game,atlas);
+			this.enemies[i]=new BotTank(gameScreen,atlas);
 	}
 	
 	public void render(SpriteBatch batch) {

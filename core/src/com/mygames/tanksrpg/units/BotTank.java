@@ -1,12 +1,11 @@
 package com.mygames.tanksrpg.units;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.mygames.tanksrpg.RunGame;
+import com.mygames.tanksrpg.GameScreen;
 import com.mygames.tanksrpg.Weapon;
 import com.mygames.tanksrpg.utils.Direction;
 import com.mygames.tanksrpg.utils.TankOwner;
@@ -20,8 +19,8 @@ public class BotTank extends Tank {
 	boolean active;
 	float pursuitRadius;
 
-	public BotTank(RunGame game, TextureAtlas atlas) {
-		super(game);
+	public BotTank(GameScreen gameScreen, TextureAtlas atlas) {
+		super(gameScreen);
 		this.ownerType = TankOwner.AI;
 		this.weapon = new Weapon(atlas);
 		this.texture = atlas.findRegion("botTankBase");
@@ -50,9 +49,9 @@ public class BotTank extends Tank {
 			angle = prefferedDirection.getAngle();
 		}
 		move(prefferedDirection, dt);
-		float dst = this.position.dst(game.getPlayer().getPosition());
+		float dst = this.position.dst(gameScreen.getPlayer().getPosition());
 		if (dst < pursuitRadius) {
-			rotateTurretToPoint(game.getPlayer().getPosition().x, game.getPlayer().getPosition().y, dt);
+			rotateTurretToPoint(gameScreen.getPlayer().getPosition().x, gameScreen.getPlayer().getPosition().y, dt);
 			fire();
 		}
 		
