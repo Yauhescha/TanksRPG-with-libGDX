@@ -7,16 +7,25 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Map {
 
 	public enum WallType {
-		HARD(0, 5, true), SOFT(1, 3, true), INDESTRUCTIBLE(2, 1, false), NONE(0, 0, false);
+		HARD(0, 5, true, false,false), 
+		SOFT(1, 3, true, false,false), 
+		INDESTRUCTIBLE(2, 1, false, false,false), 
+		WATER(3, 1, false,false,true), 
+		NONE(0, 0, false,true,true);
 
 		int index;
 		int maxHp;
 		boolean destructible;
+		boolean isUnitPossible;
+		boolean isProjectilePossible;
 
-		private WallType(int index, int maxHp, boolean destructible) {
+		private WallType(int index, int maxHp, boolean destructible, boolean isUnitPossible,
+				boolean isProjectilePossible) {
 			this.index = index;
 			this.maxHp = maxHp;
 			this.destructible = destructible;
+			this.isUnitPossible = isUnitPossible;
+			this.isProjectilePossible = isProjectilePossible;
 		}
 
 	}
@@ -55,7 +64,7 @@ public class Map {
 	private Cell cells[][];
 
 	public Map(TextureAtlas atlas) {
-		this.wallsTexture = new TextureRegion(atlas.findRegion("walls")).split(CELL_SIZE, CELL_SIZE);
+		this.wallsTexture = new TextureRegion(atlas.findRegion("obstacles")).split(CELL_SIZE, CELL_SIZE);
 		this.grassTexture = atlas.findRegion("grass40");
 		this.cells = new Cell[SIZE_X][SIZE_Y];
 		for (int i = 0; i < SIZE_X; i++)
@@ -65,7 +74,7 @@ public class Map {
 				int cy = (int) (j / 4);
 				if (cx % 2 == 0 && cy % 2 == 0)
 					if (Math.random() < 0.8)
-						this.cells[i][j].changeType(WallType.HARD);
+						this.cells[i][j].changeType(WallType.WATER);
 					else
 						this.cells[i][j].changeType(WallType.SOFT);
 				;
@@ -93,7 +102,7 @@ public class Map {
 		int cy = (int) (bullet.getPosition().y / CELL_SIZE);
 
 		if (cx >= 0 && cy >= 0 && cx <= SIZE_X && cy <= SIZE_Y) {
-			if (cells[cx][cy].type != WallType.NONE) {
+			if (!cells[cx][cy].type.isProjectilePossible) {
 				cells[cx][cy].damage();
 				bullet.deactivate();
 			}
@@ -116,7 +125,7 @@ public class Map {
 			yTop = SIZE_Y - 1;
 		for (int i = xLeft; i <= xRight; i++)
 			for (int j = yBottom; j <= yTop; j++) {
-				if (cells[i][j].type != WallType.NONE)
+				if (!cells[i][j].type.isUnitPossible)
 					return false;
 			}
 

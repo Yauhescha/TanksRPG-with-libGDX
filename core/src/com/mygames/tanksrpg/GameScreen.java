@@ -3,11 +3,13 @@ package com.mygames.tanksrpg;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,7 +21,7 @@ import com.mygames.tanksrpg.units.BotTank;
 import com.mygames.tanksrpg.units.PlayerTank;
 import com.mygames.tanksrpg.units.Tank;
 
-public class GameScreen implements Screen{
+public class GameScreen implements Screen {
 	private SpriteBatch batch;
 	private PlayerTank player;
 	private Map map;
@@ -30,17 +32,19 @@ public class GameScreen implements Screen{
 	private Stage stage;
 	private boolean paused;
 	private float gameTimer;
+	private Vector2 mousePosition;
 
 	private static final boolean FRIENDLY_FIRE = false;
-	
+
 	public GameScreen(SpriteBatch batch) {
 		this.batch = batch;
 	}
-	
+
 	@Override
 	public void show() {
+		mousePosition = new Vector2();
 		font24 = new BitmapFont(Gdx.files.internal("font24.fnt"));
-		atlas = new TextureAtlas("game.pack.pack");
+		atlas = new TextureAtlas("game.pack");
 		map = new Map(atlas);
 		player = new PlayerTank(this, atlas);
 		botEmmiter = new BotEmmiter(this, atlas);
@@ -58,10 +62,10 @@ public class GameScreen implements Screen{
 		group.setPosition(1110, 620);
 		TextButton pauseButton = new TextButton("Pause", buttonStyle);
 		TextButton exitButton = new TextButton("Exit", buttonStyle);
-		
+
 		pauseButton.setPosition(0, 40);
 		exitButton.setPosition(0, 0);
-		
+
 		pauseButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -74,18 +78,23 @@ public class GameScreen implements Screen{
 				Gdx.app.exit();
 			}
 		});
-		
+
 		group.addActor(pauseButton);
 		group.addActor(exitButton);
 		stage.addActor(group);
-		Gdx.input.setInputProcessor(stage);		
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void render(float delta) {
 		update(delta);
-		Gdx.gl.glClearColor(0, 0.6f, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+//		ScreenManager.getInstance().getCamera().position.set(player.getPosition().x,player.getPosition().y,0);
+//		ScreenManager.getInstance().getCamera().update();
+
+		batch.setProjectionMatrix(ScreenManager.getInstance().getCamera().combined);
 		batch.begin();
 		map.render(batch);
 		player.render(batch);
@@ -94,59 +103,60 @@ public class GameScreen implements Screen{
 		player.renderHUD(batch, font24);
 		batch.end();
 
-		stage.draw();		
+		stage.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+		ScreenManager.getInstance().resize(width, height);
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	
+
 	public void update(float dt) {
-		if (paused)
-			return;
-		gameTimer += dt;
-		if (gameTimer > 5.0f) {
-			gameTimer = 0.0f;
-			float xCoord, yCoord;
-			do {
-				xCoord = MathUtils.random(0, Gdx.graphics.getWidth());
-				yCoord = MathUtils.random(0, Gdx.graphics.getHeight());
-			} while (!map.isAreaClear(xCoord, yCoord, 20));
-			botEmmiter.activate(xCoord, yCoord);
+		mousePosition.set(Gdx.input.getX(), Gdx.input.getY());
+		mousePosition = ScreenManager.getInstance().getViewport().unproject(mousePosition);
+		if (!paused) {
+			gameTimer += dt;
+			if (gameTimer > 5.0f) {
+				gameTimer = 0.0f;
+				float xCoord, yCoord;
+				do {
+					xCoord = MathUtils.random(0, Gdx.graphics.getWidth());
+					yCoord = MathUtils.random(0, Gdx.graphics.getHeight());
+				} while (!map.isAreaClear(xCoord, yCoord, 20));
+				botEmmiter.activate(xCoord, yCoord);
+			}
+			player.update(dt);
+			botEmmiter.update(dt);
+			bulletEmmiter.update(dt);
+			checkCollision();
+			stage.act(dt);
 		}
-		player.update(dt);
-		botEmmiter.update(dt);
-		bulletEmmiter.update(dt);
-		checkCollision();
-		stage.act(dt);
 	}
+
 	public void checkCollision() {
 		for (int i = 0; i < bulletEmmiter.getBullets().length; i++) {
 			Bullet bullet = bulletEmmiter.getBullets()[i];
@@ -171,7 +181,7 @@ public class GameScreen implements Screen{
 			}
 		}
 	}
-	
+
 	public boolean checkBullerOwner(Tank tank, Bullet bullet) {
 		if (!FRIENDLY_FIRE) {
 			return tank.getOwnerType() != bullet.getOwner().getOwnerType();
@@ -179,15 +189,11 @@ public class GameScreen implements Screen{
 			return tank != bullet.getOwner();
 		}
 	}
-	
-	
-	
-	
-	
 
 	public BulletEmmiter getBulletEmmiter() {
 		return bulletEmmiter;
 	}
+
 	public PlayerTank getPlayer() {
 		return player;
 	}
@@ -196,5 +202,8 @@ public class GameScreen implements Screen{
 		return map;
 	}
 
+	public Vector2 getMousePosition() {
+		return mousePosition;
+	}
 
 }
