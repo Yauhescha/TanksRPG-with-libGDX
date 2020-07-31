@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -51,39 +52,55 @@ public class RunGame extends ApplicationAdapter {
 		buttonStyle.up = skin.getDrawable("simpleButton");
 		buttonStyle.font = font24;
 
+		Group group = new Group();
+		group.setPosition(1110, 620);
 		TextButton pauseButton = new TextButton("Pause", buttonStyle);
+		TextButton exitButton = new TextButton("Exit", buttonStyle);
+		
+		pauseButton.setPosition(0, 40);
+		exitButton.setPosition(0, 0);
+		
 		pauseButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				paused = !paused;
 			}
 		});
-		pauseButton.setPosition(1100, 680);
-		stage.addActor(pauseButton);
+		exitButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Gdx.app.exit();
+			}
+		});
+		
+		group.addActor(pauseButton);
+		group.addActor(exitButton);
+		stage.addActor(group);
 		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void render() {
 		dt = Gdx.graphics.getDeltaTime();
-		
-			update(dt);
-			Gdx.gl.glClearColor(0, 0.6f, 0, 1);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			batch.begin();
-			map.render(batch);
-			player.render(batch);
-			botEmmiter.render(batch);
-			bulletEmmiter.render(batch);
-			player.renderHUD(batch, font24);
-			stage.draw();
-			batch.end();
-		
-		stage.act(dt);
+
+		update(dt);
+		Gdx.gl.glClearColor(0, 0.6f, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		map.render(batch);
+		player.render(batch);
+		botEmmiter.render(batch);
+		bulletEmmiter.render(batch);
+		player.renderHUD(batch, font24);
+		batch.end();
+
+		stage.draw();
+
 	}
 
 	public void update(float dt) {
-		if (!paused)return;
+		if (!paused)
+			return;
 		gameTimer += dt;
 		if (gameTimer > 5.0f) {
 			gameTimer = 0.0f;
@@ -98,6 +115,7 @@ public class RunGame extends ApplicationAdapter {
 		botEmmiter.update(dt);
 		bulletEmmiter.update(dt);
 		checkCollision();
+		stage.act(dt);
 	}
 
 	@Override
